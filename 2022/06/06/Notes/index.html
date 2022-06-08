@@ -19,7 +19,7 @@
     <meta name="description" content="JVM判断对象”生死“可达性分析算法应用计数法–循环引用问题–&gt;可达性分析算法实现：通过一系列GC Roots通过引用链。当Object到GC Roots不可达则需回收 引用强引用、软引用、若引用、虚引用 方法区-无用的类ps: 元空间–永久代–方法区落地实现所有实例已被回收（Java堆中不存在该类实例）加载该类的ClassLoader已被回收该类对应的java.lang.Class对象没有">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Sher">
-<meta property="og:url" content="https://sher.github.io/project/2022/06/06/Notes/index.html">
+<meta property="og:url" content="https://sherzhou.github.io/project/2022/06/06/Notes/index.html">
 <meta property="og:site_name" content="Sher">
 <meta property="og:description" content="JVM判断对象”生死“可达性分析算法应用计数法–循环引用问题–&gt;可达性分析算法实现：通过一系列GC Roots通过引用链。当Object到GC Roots不可达则需回收 引用强引用、软引用、若引用、虚引用 方法区-无用的类ps: 元空间–永久代–方法区落地实现所有实例已被回收（Java堆中不存在该类实例）加载该类的ClassLoader已被回收该类对应的java.lang.Class对象没有">
 <meta property="og:locale" content="zh_CN">
@@ -72,7 +72,7 @@
   <script id="fluid-configs">
     var Fluid = window.Fluid || {};
     Fluid.ctx = Object.assign({}, Fluid.ctx)
-    var CONFIG = {"hostname":"sher.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
+    var CONFIG = {"hostname":"sherzhou.github.io","root":"/","version":"1.9.1","typing":{"enable":true,"typeSpeed":70,"cursorChar":"_","loop":false,"scope":[]},"anchorjs":{"enable":true,"element":"h1,h2,h3,h4,h5,h6","placement":"left","visible":"hover","icon":""},"progressbar":{"enable":true,"height_px":3,"color":"#29d","options":{"showSpinner":false,"trickleSpeed":100}},"code_language":{"enable":true,"default":"TEXT"},"copy_btn":true,"image_caption":{"enable":true},"image_zoom":{"enable":true,"img_url_replace":["",""]},"toc":{"enable":true,"placement":"right","headingSelector":"h1,h2,h3,h4,h5,h6","collapseDepth":0},"lazyload":{"enable":true,"loading_img":"/img/loading.gif","onlypost":false,"offset_factor":2},"web_analytics":{"enable":false,"follow_dnt":true,"baidu":null,"google":null,"gtag":null,"tencent":{"sid":null,"cid":null},"woyaola":null,"cnzz":null,"leancloud":{"app_id":null,"app_key":null,"server_url":null,"path":"window.location.pathname","ignore_local":false}},"search_path":"/local-search.xml"};
 
     if (CONFIG.web_analytics.follow_dnt) {
       var dntVal = navigator.doNotTrack || window.doNotTrack || navigator.msDoNotTrack;
@@ -304,7 +304,7 @@
   <div class="license-box my-3">
     <div class="license-title">
       <div></div>
-      <div>https://sher.github.io/project/2022/06/06/Notes/</div>
+      <div>https://sherzhou.github.io/project/2022/06/06/Notes/</div>
     </div>
     <div class="license-meta">
       
