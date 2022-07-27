@@ -18,22 +18,22 @@
   
     <meta name="description" content="前请提要事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）事务隔离级别（读未提交，读已提交，可重复读，序列化）CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance） MySQL事务实现原理Redo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Sher">
+<meta property="og:title" content="事务之MySQL与Spring">
 <meta property="og:url" content="https://sherzhou.github.io/project/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/index.html">
 <meta property="og:site_name" content="Sher">
 <meta property="og:description" content="前请提要事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）事务隔离级别（读未提交，读已提交，可重复读，序列化）CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance） MySQL事务实现原理Redo">
 <meta property="og:locale" content="zh_CN">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
 <meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg">
-<meta property="article:published_time" content="2022-07-27T01:17:21.735Z">
-<meta property="article:modified_time" content="2022-07-26T16:57:21.678Z">
+<meta property="article:published_time" content="2022-07-27T03:34:51.000Z">
+<meta property="article:modified_time" content="2022-07-27T03:35:21.819Z">
 <meta property="article:author" content="Sher Zhou">
 <meta name="twitter:card" content="summary_large_image">
 <meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
   
   
   
-  <title>Sher</title>
+  <title>事务之MySQL与Spring - Sher</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -196,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text=""></span>
+            <span id="subtitle" data-typed-text="事务之MySQL与Spring"></span>
           
         </div>
 
@@ -207,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-07-27 09:17" pubdate>
-          2022年7月27日 上午
+        <time datetime="2022-07-27 11:34" pubdate>
+          2022年7月27日 中午
         </time>
       </span>
     
@@ -268,7 +268,7 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none"></h1>
+            <h1 style="display: none">事务之MySQL与Spring</h1>
             
             <div class="markdown-body">
               
@@ -302,7 +302,7 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div></div>
+      <div>事务之MySQL与Spring</div>
       <div>https://sherzhou.github.io/project/2022/07/27/事务之MySQL与Spring/</div>
     </div>
     <div class="license-meta">
@@ -345,18 +345,12 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/27/PR%E6%B5%81%E7%A8%8B/" title="">
-                        <i class="iconfont icon-arrowleft"></i>
-                        <span class="hidden-mobile"></span>
-                        <span class="visible-mobile">上一篇</span>
-                      </a>
-                    
                   </article>
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/06/07/readingNotes/" title="Notes">
-                        <span class="hidden-mobile">Notes</span>
+                      <a href="/2022/07/27/PR%E6%B5%81%E7%A8%8B/" title="PR流程">
+                        <span class="hidden-mobile">PR流程</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
