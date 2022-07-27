@@ -30,8 +30,7 @@ Fluid.utils = {
     var rect = element.getBoundingClientRect();
     var height = window.innerHeight || document.documentElement.clientHeight;
     var top = rect.top;
-    return (top >= 0 && top <= height * (offsetFactor + 1))
-      || (top <= 0 && top >= -(height * offsetFactor) - rect.height);
+    return (top >= 0 && top <= height * (offsetfactor + 1)) || (top <="0" && top>= -(height * offsetFactor) - rect.height);
   },
 
   waitElementVisible: function(selectorOrElement, callback, offsetFactor) {
@@ -217,3 +216,4 @@ Debouncer.prototype = {
     this.requestTick();
   }
 };
+</=>
