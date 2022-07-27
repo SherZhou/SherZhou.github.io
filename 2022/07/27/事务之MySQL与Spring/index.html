@@ -16,25 +16,24 @@
   <meta name="author" content="Sher Zhou">
   <meta name="keywords" content="">
   
-    <meta name="description" content="JVM判断对象”生死“可达性分析算法应用计数法–循环引用问题–&gt;可达性分析算法实现：通过一系列GC Roots通过引用链。当Object到GC Roots不可达则需回收 引用强引用、软引用、若引用、虚引用 方法区-无用的类ps: 元空间–永久代–方法区落地实现所有实例已被回收（Java堆中不存在该类实例）加载该类的ClassLoader已被回收该类对应的java.lang.Class对象没有">
+    <meta name="description" content="前请提要事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）事务隔离级别（读未提交，读已提交，可重复读，序列化）CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance） MySQL事务实现原理Redo">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Notes">
-<meta property="og:url" content="https://sherzhou.github.io/project/2022/06/07/readingNotes/index.html">
+<meta property="og:title" content="Sher">
+<meta property="og:url" content="https://sherzhou.github.io/project/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/index.html">
 <meta property="og:site_name" content="Sher">
-<meta property="og:description" content="JVM判断对象”生死“可达性分析算法应用计数法–循环引用问题–&gt;可达性分析算法实现：通过一系列GC Roots通过引用链。当Object到GC Roots不可达则需回收 引用强引用、软引用、若引用、虚引用 方法区-无用的类ps: 元空间–永久代–方法区落地实现所有实例已被回收（Java堆中不存在该类实例）加载该类的ClassLoader已被回收该类对应的java.lang.Class对象没有">
+<meta property="og:description" content="前请提要事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）事务隔离级别（读未提交，读已提交，可重复读，序列化）CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance） MySQL事务实现原理Redo">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/29005494/1653547210249-36327a5b-1805-42ef-a05d-488e5dde67ff.png#clientId=uc173d41e-4a84-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=550&id=u05fa212e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=825&originWidth=866&originalType=binary&ratio=1&rotation=0&showTitle=false&size=415424&status=done&style=none&taskId=u08f04b08-62ca-46f6-b9e1-358f7198230&title=&width=577.3333333333334">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/png/29005494/1654276967991-b1262c7a-ce8d-495a-bd1b-b964678f78f9.png#clientId=u34aec54a-525a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=185&id=u3f4c24f3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=277&originWidth=637&originalType=binary&ratio=1&rotation=0&showTitle=false&size=100834&status=done&style=none&taskId=u0a6df56e-b014-4ffb-b950-2c5ec0d9d27&title=&width=424.6666666666667">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1654504936769-e0d64bb1-050d-4dce-915f-645f07ccf78b.jpeg">
-<meta property="article:published_time" content="2022-06-07T15:00:53.000Z">
-<meta property="article:modified_time" content="2022-06-07T15:01:24.975Z">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
+<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg">
+<meta property="article:published_time" content="2022-07-27T01:17:21.735Z">
+<meta property="article:modified_time" content="2022-07-26T16:57:21.678Z">
 <meta property="article:author" content="Sher Zhou">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/png/29005494/1653547210249-36327a5b-1805-42ef-a05d-488e5dde67ff.png#clientId=uc173d41e-4a84-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=550&id=u05fa212e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=825&originWidth=866&originalType=binary&ratio=1&rotation=0&showTitle=false&size=415424&status=done&style=none&taskId=u08f04b08-62ca-46f6-b9e1-358f7198230&title=&width=577.3333333333334">
+<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
   
   
   
-  <title>Notes - Sher</title>
+  <title>Sher</title>
 
   <link  rel="stylesheet" href="https://lib.baomitu.com/twitter-bootstrap/4.6.1/css/bootstrap.min.css" />
 
@@ -197,7 +196,7 @@
       <div class="banner-text text-center fade-in-up">
         <div class="h2">
           
-            <span id="subtitle" data-typed-text="Notes"></span>
+            <span id="subtitle" data-typed-text=""></span>
           
         </div>
 
@@ -208,8 +207,8 @@
     
       <span class="post-meta">
         <i class="iconfont icon-date-fill" aria-hidden="true"></i>
-        <time datetime="2022-06-07 23:00" pubdate>
-          2022年6月7日 晚上
+        <time datetime="2022-07-27 09:17" pubdate>
+          2022年7月27日 上午
         </time>
       </span>
     
@@ -220,7 +219,7 @@
       <span class="post-meta mr-2">
         <i class="iconfont icon-chart"></i>
         
-          1.4k 字
+          2.2k 字
         
       </span>
     
@@ -231,7 +230,7 @@
         
         
         
-          12 分钟
+          19 分钟
         
       </span>
     
@@ -269,24 +268,24 @@
         <div id="board">
           <article class="post-content mx-auto">
             <!-- SEO header -->
-            <h1 style="display: none">Notes</h1>
+            <h1 style="display: none"></h1>
             
             <div class="markdown-body">
               
-              <h2 id="JVM"><a href="#JVM" class="headerlink" title="JVM"></a>JVM</h2><h3 id="判断对象”生死“"><a href="#判断对象”生死“" class="headerlink" title="判断对象”生死“"></a>判断对象”生死“</h3><h4 id="可达性分析算法"><a href="#可达性分析算法" class="headerlink" title="可达性分析算法"></a>可达性分析算法</h4><p>应用计数法–循环引用问题–&gt;可达性分析算法<br>实现：通过一系列GC Roots通过引用链。当Object到GC Roots不可达则需回收</p>
-<h4 id="引用"><a href="#引用" class="headerlink" title="引用"></a>引用</h4><p>强引用、软引用、若引用、虚引用</p>
-<h4 id="方法区-无用的类"><a href="#方法区-无用的类" class="headerlink" title="方法区-无用的类"></a>方法区-无用的类</h4><p>ps: 元空间–永久代–方法区落地实现<br>所有实例已被回收（Java堆中不存在该类实例）<br>加载该类的ClassLoader已被回收<br>该类对应的java.lang.Class对象没有在任何地方被引用，无法通过反射访问该类的方法</p>
-<h3 id="垃圾收集算法"><a href="#垃圾收集算法" class="headerlink" title="垃圾收集算法"></a>垃圾收集算法</h3><h4 id="标记-清除算法-Mark-Sweep"><a href="#标记-清除算法-Mark-Sweep" class="headerlink" title="标记-清除算法(Mark-Sweep)"></a>标记-清除算法(Mark-Sweep)</h4><p>不足：<br>效率低–复制算法<br>空间碎片多</p>
-<h4 id="复制算法"><a href="#复制算法" class="headerlink" title="复制算法"></a>复制算法</h4><p>内存容量等量划分为两块，一次对整个半区进行内存回收<br>只要移动堆顶指针，按顺序分配内存<br>缺点：内存缩小为原来一半（改进1：不均分）<br>对象存活率较高时要进行较多复制操作（改进：标记-整理算法)</p>
-<h4 id="标记-整理算法-Mark-Compact"><a href="#标记-整理算法-Mark-Compact" class="headerlink" title="标记-整理算法(Mark-Compact)"></a>标记-整理算法(Mark-Compact)</h4><p>不是对可回收对象进行清理，而是让所有存活对象向一端移动，然后清理端边界之外的内存<br>（先挪动，再统一清理）</p>
-<h4 id="分代收集算法"><a href="#分代收集算法" class="headerlink" title="分代收集算法"></a>分代收集算法</h4><p>只是根据对象存活周期的不同将内存划分为几块。<br>一般是把Java堆分为新生代和老年代。<br>新生代：每次垃圾收集时都发现有大批对象死去，只有少量存活。<br>选用复制算法，只需要付出少量存活对象的复制成本就可以完成收集。<br>老年代：对象存活率高、没有额外空间对它进行分配担保，<br>就必须使用“标记—清理”或者“标记—整理”算法来进行回收。</p>
-<h4 id="算法实现"><a href="#算法实现" class="headerlink" title="算法实现"></a>算法实现</h4><p>枚举GC ROOT<br>设判安全点、安全区</p>
-<h3 id="垃圾收集器"><a href="#垃圾收集器" class="headerlink" title="垃圾收集器"></a>垃圾收集器</h3><h4 id="Serial收集器"><a href="#Serial收集器" class="headerlink" title="Serial收集器"></a>Serial收集器</h4><p>单线程–收集时暂停其他所有的工作线程 直至收集结束</p>
-<h4 id="ParNew收集器"><a href="#ParNew收集器" class="headerlink" title="ParNew收集器"></a>ParNew收集器</h4><p>Serial多线程版本</p>
-<h4 id="Parallel-Scavenge收集器"><a href="#Parallel-Scavenge收集器" class="headerlink" title="Parallel Scavenge收集器"></a>Parallel Scavenge收集器</h4><p>新生代收集器–使用复制算法<br>关注点<br>CMS等：缩短用户线程停顿时间–响应好<br>Parallel Scanvenge:达到一个可控的吞吐量–高效利用CPU</p>
-<h4 id="CMS收集器"><a href="#CMS收集器" class="headerlink" title="CMS收集器"></a>CMS收集器</h4><p>Concurrent Mark Sweep<br>过程：<br>初始标记–&gt;并发标记–&gt;重新标记–&gt;并发清除<br>1、3步需“stop the world”<br>2、4耗时长但可以与用户线程一起工作<br>缺点：<br>对CPU资源敏感<br>无法处理浮动垃圾（并发清理阶段用户线程产生的新垃圾，CMS无法在当次收集中处理掉）<br>基于标记–清除算法 ，会产生大量空间碎片–内存整理仍是单线程</p>
-<h4 id="G1收集器☆"><a href="#G1收集器☆" class="headerlink" title="G1收集器☆"></a>G1收集器☆</h4><p>面向服务端应用<br>初始标记–&gt;并发标记–&gt;最终标记–&gt;筛选回收<br>垃圾收集相关参数<br><img src="https://cdn.nlark.com/yuque/0/2022/png/29005494/1653547210249-36327a5b-1805-42ef-a05d-488e5dde67ff.png#clientId=uc173d41e-4a84-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=550&id=u05fa212e&margin=%5Bobject%20Object%5D&name=image.png&originHeight=825&originWidth=866&originalType=binary&ratio=1&rotation=0&showTitle=false&size=415424&status=done&style=none&taskId=u08f04b08-62ca-46f6-b9e1-358f7198230&title=&width=577.3333333333334" srcset="/img/loading.gif" lazyload alt="image.png"><br><img src="https://cdn.nlark.com/yuque/0/2022/png/29005494/1654276967991-b1262c7a-ce8d-495a-bd1b-b964678f78f9.png#clientId=u34aec54a-525a-4&crop=0&crop=0&crop=1&crop=1&from=paste&height=185&id=u3f4c24f3&margin=%5Bobject%20Object%5D&name=image.png&originHeight=277&originWidth=637&originalType=binary&ratio=1&rotation=0&showTitle=false&size=100834&status=done&style=none&taskId=u0a6df56e-b014-4ffb-b950-2c5ec0d9d27&title=&width=424.6666666666667" srcset="/img/loading.gif" lazyload alt="image.png"></p>
-<h2 id="ON-JAVA"><a href="#ON-JAVA" class="headerlink" title="ON JAVA"></a>ON JAVA</h2><p>单继承结构的优势：所有类最终都属于同一个基类；使得垃圾收集器的实现更容易<br>Arrays.asList() 方法接受一个数组或是逗号分隔的元素列表（使用可变参数）， 并将其转换为 **List **对象。但这里底层是数组，尝试在该List上调用add() 或 remove()会在运行时报“Unsupported Operation”<br>Collections.addAll() 方法接受一个 **Collection **对象，以 及一个数组或是一个逗号分隔的列表，将其中元素添加到 **Collection **中。<br><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1654504936769-e0d64bb1-050d-4dce-915f-645f07ccf78b.jpeg" srcset="/img/loading.gif" lazyload><br>iterator只能单向移动(hasNext)<br>而ListIterator可以双向移动<br>Queue在LinkedList的基础上添加了element(),offer(),peek(),poll()和remove()方法<br>Java6中添加了ArrayDeque 其中包含直接实现堆栈功能的方法</p>
+              <h3 id="前请提要"><a href="#前请提要" class="headerlink" title="前请提要"></a>前请提要</h3><p>事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）<br>事务隔离级别（读未提交，读已提交，可重复读，序列化）<br>CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance）</p>
+<h2 id="MySQL事务实现原理"><a href="#MySQL事务实现原理" class="headerlink" title="MySQL事务实现原理"></a>MySQL事务实现原理</h2><h3 id="Redo-Log"><a href="#Redo-Log" class="headerlink" title="Redo Log"></a>Redo Log</h3><p>负责原子性与持久性，记载对磁盘上数据进行的修改操作<br>作用：恢复提交后的物理数据页<br>构成：<br>日志缓冲（内存） – 易失<br>重做日志文件（磁盘）–  持久化 不易失<br>刷盘规则：<br>    （1）开启事务，发出提交事务指令后是否刷新日志由innodb_flush_log_at_trx_commit决定，默认1（每次提交事务都将日志缓冲中日志写入OS buffer，并且调用fsync(）写入磁盘文件，不会丢失数据）<br>0、1、2的值影响写入OS buffer与写入磁盘文件是否需要隔1s<br>（2）按频率刷新。刷新频率由innodb_flush_log_at_timeout决定，默认1s<br>（3）Log Buffer使用内存&gt;50% 触发刷盘操作<br>（4）chechpoint 一定程度上代表了刷鞋到磁盘时日志所处LSN位置（Long sequence number）</p>
+<h3 id="Undo-log"><a href="#Undo-log" class="headerlink" title="Undo log"></a>Undo log</h3><p>作用：回滚事务和多版本并发事务–MVCC机制<br>undo log也会产生redo log保证完整性与可靠性<br>存储：段segment，存放在共享数据表空间，默认ibdata1文件<br>undo log实现MVCC：<br>两个隐藏列：行的创建版本；行删除版本<br>可重复读下增删查改：<br>select:只查找版本号&lt;=当前事务版本号的数据<br>insert：将当前事务版本号保存为当前行创建版本号<br>delete: 当前事务版本号保存为删除的数据行版本号，作为行删除标识<br>update:innodb将待修改的行赋值为新行，当前事务版本号保存为新数据行的创建版本号，<strong>同时保存当前事务版本号为原来数据行删除版本号</strong><br>实际innodb实现上 每行数据后面添加了三个字段：6字节事务id,7字节回滚指针,6字节DB_ROW_ID</p>
+<h3 id="Binlog"><a href="#Binlog" class="headerlink" title="Binlog"></a>Binlog</h3><p>属于MySQL的日志(redo log是innodb特有)  二进制日志<br>以事件形式记录所有数据库表结构变更以及表数据变更的二进制日志<br>使用场景：主从复制；数据恢复<br>记录模式:row\statement\mixed</p>
+<h3 id="MySQL事务执行流程"><a href="#MySQL事务执行流程" class="headerlink" title="MySQL事务执行流程"></a>MySQL事务执行流程</h3><p><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="事务恢复流程"><a href="#事务恢复流程" class="headerlink" title="事务恢复流程"></a>事务恢复流程</h3><p><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="MySQL中XA事务"><a href="#MySQL中XA事务" class="headerlink" title="MySQL中XA事务"></a>MySQL中XA事务</h3><p>XA(eXtended Architecture)是指由X/Open 组织提出的分布式交易处理的规范。XA 是一个分布式事务协议,由Tuxedo 提出,所以分布式事务也称为XA 事务。<br>本质上基于两阶段提交，有一个事务管理器，一个或多个资源管理器和一个应用程序组成<br>MySQL中通过show engiens命令查看存储引擎是否支持XA事务<br>可以通过JDBC操作MySQL事务但较为繁琐</p>
+<h2 id="Spring-事务实现原理"><a href="#Spring-事务实现原理" class="headerlink" title="Spring 事务实现原理"></a>Spring 事务实现原理</h2><p>本质上是对数据库事务的进一步封装<br>使用spring事务则不用JDBC手动开启、提交、回滚事务<br>通过注解实现</p>
+<h3 id="三大接口"><a href="#三大接口" class="headerlink" title="三大接口"></a>三大接口</h3><p>Platform TransactionManager：为Hibernate、MyBatis、JTA等持久化框架提供了事务管理器<br>TransactionDefinition：主要定义了与事务相关的方法，表示事务属性的常量值等。部分事务属性的常量与Propagation枚举类中的事务传播类型相对应<br>TransactionStatus：存储事务执行状态，并定义一组方法来判断或读取事务状态信息</p>
+<h3 id="隔离级别"><a href="#隔离级别" class="headerlink" title="隔离级别"></a>隔离级别</h3><p>ISOLATION_DEFAULT：默认。直接使用数据库默认的事务隔离级别<br>ISOLATION_READ_UNCOMMITTED：最低，会产生脏读、不可重复读和幻读问题。相当于MySQL的UNCOMMITTED_READ<br>ISOLATION_READ_COMMITTED：存在不可重复读和幻读问题。相当于COMMITTED_READ<br>ISOLATION_REPEATABLE_READ：存在幻读问题。相当于REPEATABLE_READ<br>ISOLATION_SERIALIZABLE：事务只能按特定顺序执行，相当于SERIALIZABLE</p>
+<p>ps：不可重复读关注修改，幻读关注增删</p>
+<h3 id="传播机制"><a href="#传播机制" class="headerlink" title="传播机制"></a>传播机制</h3><p>加粗为常用事务类型<br>支持当前事务：<br><strong>REQUIRED：默认</strong><br>SUPPORTS：外部不存在事务时，不会开启新的事物，外部存在事务时，将其加入外部事物<br>MANDATORY：具备强制性，当前操作必须存在事务，不存在则抛出异常</p>
+<p>不支持当前事务：<br><strong>REQUIRES_NEW：总是创建新的事务执行，适用于不受外层方法事务影响的场景如记录事务日志等操作</strong><br><strong>NOT_SUPPORTED：适用于发送提示信息、邮件等不影响系统的主体业务逻辑，即使操作失败也不应该对主体逻辑产生影响，不能使主题逻辑的事务回滚</strong><br>NEVER：当前操作存在事务则抛出异常<br>嵌套：<br>NESTED：封装事务存在，并且外部事物抛出异常回滚，内层事务必回滚。内层事务回滚则并不影响外层事务的提交与回滚。如果封装事务不存在则按REQUIED事务传播类型执行</p>
+<h3 id="失效场景"><a href="#失效场景" class="headerlink" title="失效场景"></a>失效场景</h3><p>数据库不支持事务<br>事务方法未被Spring管理<br>方法没有被public修饰<br>同一类中方法调用<br>未配置事务管理器<br>方法的事务传播类型不支持事务<br>不正确的捕获异常<br>标注错误异常类型</p>
 
               
             </div>
@@ -303,8 +302,8 @@
 
   <div class="license-box my-3">
     <div class="license-title">
-      <div>Notes</div>
-      <div>https://sherzhou.github.io/project/2022/06/07/readingNotes/</div>
+      <div></div>
+      <div>https://sherzhou.github.io/project/2022/07/27/事务之MySQL与Spring/</div>
     </div>
     <div class="license-meta">
       
@@ -316,7 +315,7 @@
       
         <div class="license-meta-item license-meta-date">
           <div>发布于</div>
-          <div>2022年6月7日</div>
+          <div>2022年7月27日</div>
         </div>
       
       
@@ -346,7 +345,7 @@
                   <article class="post-prev col-6">
                     
                     
-                      <a href="/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/" title="">
+                      <a href="/2022/07/27/PR%E6%B5%81%E7%A8%8B/" title="">
                         <i class="iconfont icon-arrowleft"></i>
                         <span class="hidden-mobile"></span>
                         <span class="visible-mobile">上一篇</span>
@@ -356,8 +355,8 @@
                   <article class="post-next col-6">
                     
                     
-                      <a href="/2022/06/07/leetcode-amateur/" title="leetcode amateur">
-                        <span class="hidden-mobile">leetcode amateur</span>
+                      <a href="/2022/06/07/readingNotes/" title="Notes">
+                        <span class="hidden-mobile">Notes</span>
                         <span class="visible-mobile">下一篇</span>
                         <i class="iconfont icon-arrowright"></i>
                       </a>
