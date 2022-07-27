@@ -23,13 +23,13 @@
 <meta property="og:site_name" content="Sher">
 <meta property="og:description" content="前请提要事务的ACID特性：原子性（atomicity，或称不可分割性）、一致性（consistency）、隔离性（isolation，又称独立性）、持久性（durability）事务隔离级别（读未提交，读已提交，可重复读，序列化）CAP理论：一致性（Consistency）、可用性（Availability）、分区容忍性（Partition Tolerance） MySQL事务实现原理Redo">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
-<meta property="og:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg">
+<meta property="og:image" content="https://sherzhou.github.io/project/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/事务之MySQL与Spring.assets/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
+<meta property="og:image" content="https://sherzhou.github.io/project/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/事务之MySQL与Spring.assets/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg">
 <meta property="article:published_time" content="2022-07-27T03:34:51.000Z">
-<meta property="article:modified_time" content="2022-07-27T03:35:21.819Z">
+<meta property="article:modified_time" content="2022-07-27T03:46:08.658Z">
 <meta property="article:author" content="Sher Zhou">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:image" content="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
+<meta name="twitter:image" content="https://sherzhou.github.io/project/2022/07/27/%E4%BA%8B%E5%8A%A1%E4%B9%8BMySQL%E4%B8%8ESpring/事务之MySQL与Spring.assets/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg">
   
   
   
@@ -276,8 +276,10 @@
 <h2 id="MySQL事务实现原理"><a href="#MySQL事务实现原理" class="headerlink" title="MySQL事务实现原理"></a>MySQL事务实现原理</h2><h3 id="Redo-Log"><a href="#Redo-Log" class="headerlink" title="Redo Log"></a>Redo Log</h3><p>负责原子性与持久性，记载对磁盘上数据进行的修改操作<br>作用：恢复提交后的物理数据页<br>构成：<br>日志缓冲（内存） – 易失<br>重做日志文件（磁盘）–  持久化 不易失<br>刷盘规则：<br>    （1）开启事务，发出提交事务指令后是否刷新日志由innodb_flush_log_at_trx_commit决定，默认1（每次提交事务都将日志缓冲中日志写入OS buffer，并且调用fsync(）写入磁盘文件，不会丢失数据）<br>0、1、2的值影响写入OS buffer与写入磁盘文件是否需要隔1s<br>（2）按频率刷新。刷新频率由innodb_flush_log_at_timeout决定，默认1s<br>（3）Log Buffer使用内存&gt;50% 触发刷盘操作<br>（4）chechpoint 一定程度上代表了刷鞋到磁盘时日志所处LSN位置（Long sequence number）</p>
 <h3 id="Undo-log"><a href="#Undo-log" class="headerlink" title="Undo log"></a>Undo log</h3><p>作用：回滚事务和多版本并发事务–MVCC机制<br>undo log也会产生redo log保证完整性与可靠性<br>存储：段segment，存放在共享数据表空间，默认ibdata1文件<br>undo log实现MVCC：<br>两个隐藏列：行的创建版本；行删除版本<br>可重复读下增删查改：<br>select:只查找版本号&lt;=当前事务版本号的数据<br>insert：将当前事务版本号保存为当前行创建版本号<br>delete: 当前事务版本号保存为删除的数据行版本号，作为行删除标识<br>update:innodb将待修改的行赋值为新行，当前事务版本号保存为新数据行的创建版本号，<strong>同时保存当前事务版本号为原来数据行删除版本号</strong><br>实际innodb实现上 每行数据后面添加了三个字段：6字节事务id,7字节回滚指针,6字节DB_ROW_ID</p>
 <h3 id="Binlog"><a href="#Binlog" class="headerlink" title="Binlog"></a>Binlog</h3><p>属于MySQL的日志(redo log是innodb特有)  二进制日志<br>以事件形式记录所有数据库表结构变更以及表数据变更的二进制日志<br>使用场景：主从复制；数据恢复<br>记录模式:row\statement\mixed</p>
-<h3 id="MySQL事务执行流程"><a href="#MySQL事务执行流程" class="headerlink" title="MySQL事务执行流程"></a>MySQL事务执行流程</h3><p><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg" srcset="/img/loading.gif" lazyload></p>
-<h3 id="事务恢复流程"><a href="#事务恢复流程" class="headerlink" title="事务恢复流程"></a>事务恢复流程</h3><p><img src="https://cdn.nlark.com/yuque/0/2022/jpeg/29005494/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg" srcset="/img/loading.gif" lazyload></p>
+<h3 id="MySQL事务执行流程"><a href="#MySQL事务执行流程" class="headerlink" title="MySQL事务执行流程"></a>MySQL事务执行流程</h3><img src="事务之MySQL与Spring.assets/1655400261761-acb3d305-97db-41c9-ba16-aa57cb63964f.jpeg" srcset="/img/loading.gif" lazyload style="zoom:80%;" />
+
+<h3 id="事务恢复流程"><a href="#事务恢复流程" class="headerlink" title="事务恢复流程"></a>事务恢复流程</h3><img src="事务之MySQL与Spring.assets/1655400240625-491c357b-c3f6-4866-9734-c977a5cc9082.jpeg" srcset="/img/loading.gif" lazyload style="zoom: 67%;" />
+
 <h3 id="MySQL中XA事务"><a href="#MySQL中XA事务" class="headerlink" title="MySQL中XA事务"></a>MySQL中XA事务</h3><p>XA(eXtended Architecture)是指由X/Open 组织提出的分布式交易处理的规范。XA 是一个分布式事务协议,由Tuxedo 提出,所以分布式事务也称为XA 事务。<br>本质上基于两阶段提交，有一个事务管理器，一个或多个资源管理器和一个应用程序组成<br>MySQL中通过show engiens命令查看存储引擎是否支持XA事务<br>可以通过JDBC操作MySQL事务但较为繁琐</p>
 <h2 id="Spring-事务实现原理"><a href="#Spring-事务实现原理" class="headerlink" title="Spring 事务实现原理"></a>Spring 事务实现原理</h2><p>本质上是对数据库事务的进一步封装<br>使用spring事务则不用JDBC手动开启、提交、回滚事务<br>通过注解实现</p>
 <h3 id="三大接口"><a href="#三大接口" class="headerlink" title="三大接口"></a>三大接口</h3><p>Platform TransactionManager：为Hibernate、MyBatis、JTA等持久化框架提供了事务管理器<br>TransactionDefinition：主要定义了与事务相关的方法，表示事务属性的常量值等。部分事务属性的常量与Propagation枚举类中的事务传播类型相对应<br>TransactionStatus：存储事务执行状态，并定义一组方法来判断或读取事务状态信息</p>
