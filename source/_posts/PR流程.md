@@ -4,11 +4,11 @@ top: false
 cover: false
 toc: true
 mathjax: true
-date: 2022-10-04 23:23:16
+date: 2022-10-04 01:55:14
 password:
 summary:
-tags:git
-categories:java
+tags: git
+categories:
 ---
 
 ps: 本次操作以Seata为源仓库
@@ -101,12 +101,22 @@ git push origin your_branch:your_branch
 ```
 
 PR会按照squash方式进行merge。如果不创建新分支，本地和远程的提交记录将不能保持同步
-ps: 方便id显示在contributor列表中可以做以下设置
+ps: (1)方便id显示在contributor列表中可以做以下设置
 
 ```powershell
 git config --global your.name"username"
 git congig --global your.email"xxx@mail.com"
 ```
+
+(2)分支查看
+
+本地分支查看 git branch    
+
+远程分支查看 git branch -r
+
+全部分支 git branch -a
+
+分支细节查看 git branch -vv / git branch -vvr
 
 ### 开发 
 
@@ -144,6 +154,3 @@ git push origin --delete your_branch
 https://blog.csdn.net/qq_33429968/article/details/62219783?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&utm_relevant_index=1
 
 https://learngitbranching.js.org/?locale=zh_CN
-
-
-
