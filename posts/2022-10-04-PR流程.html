@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PR流程 · Sher</title>
+  <meta name="author" content="Sher Zhou">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-title" href="/">Sher</a>
+      <nav>
+        <a href="/" class="">首页</a>
+        <a href="/archives.html" class="">归档</a>
+        <a href="/search.html" class="">搜索</a>
+        <a href="/about.html" class="">关于</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    
+        <article class="post">
+          <header class="post-header">
+            <h1>PR流程</h1>
+            <time datetime="2022-10-04">2022年10月4日</time>
+            <p class="tags"><span class="tag">git</span></p>
+          </header>
+          <div class="post-content"><p>ps: 本次操作以Seata为源仓库</p>
+<h3>三阶段</h3>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658886093327-e4f54f3e-47e6-494f-acfb-ed3bb0ea768e.jpeg" alt="img"></p>
+<h3>准备仓库</h3>
+<h4>fork项目</h4>
+<p>进入源项目页面，点击右上角Fork按钮</p>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658888621847-879f79fc-a17c-499b-b5ca-42006d34ddbf-16588931386535-165889350667013.png" alt=""></p>
+<p>会自动生成以自己名称命名的项目</p>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658888505200-c951bc7d-18cd-48fe-89f6-c557a45ed51d-165889350975115.png" alt=""></p>
+<h4>clone到本地</h4>
+<p>即将自己名称下的项目下载到本地
+<img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658889063492-78b17270-fd3b-468f-aced-3199adb2872a.png" alt=""></p>
+<pre><code class="language-powershell">git clone https://github.com/(your_github_name)/(upstream_project_name).git
+cd upstream_project_name
+</code></pre>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658889091140-634fb3a9-e8c5-4ba2-b05a-c635a40b9449-16588932048249-165889351770819.png" alt=""></p>
+<h4>设置remote</h4>
+<p>与源远程仓库建立联系</p>
+<pre><code class="language-powershell">git remote add upstream https://github.com/...(source_project_address)
+</code></pre>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658889446085-e867c55a-dcd5-4b78-af41-58631e011463.png" alt="">
+查看联系</p>
+<pre><code class="language-powershell">git remote -v
+</code></pre>
+<p><img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658889385032-1ada811c-56dd-4d54-a3da-533cd3544e06.png" alt="">
+可以看到自己的仓库地址(<code>origin </code>)与源仓库地址(<code>upstream</code>)</p>
+<h4>编译项目（非必须）</h4>
+<p>编译并安装所有模块到Maven本地仓库缓存，同时会生成ANTLR.g4语法文件对应的解析器Java类，这样在IDE就不会有相关编译错误。</p>
+<pre><code class="language-powershell">cd upstream_project_name
+#我一般只跳过checkstyle和Tests
+mvn clean install -Dmaven.javadoc.skip=true -Dcheckstyle.skip=true -Drat.skip=true -Djacoco.skip=true -DskipITs -DskipTests -Prelease
+</code></pre>
+<p>以后从源文件拉去最新代码并新建分支时可能会遇到类似解析器编译错误，可以重新运行该命令来解决问题。</p>
+<h4>创建分支</h4>
+<p>用于开发</p>
+<pre><code class="language-powershell">#切换本地分支（切换分支到develop）
+git checkout upstream develop
+
+# 将更新源远程repo(upstream)所包含develop分支的最新commit-id, 将其记录到.git/FETCH_HEAD文件中
+git fetch upstream
+
+#改变基底，类似与git merge 但源仓库有最新提交时两者间有区别
+git rebase upstream/master
+
+# 将代码push到自己名称下仓库(origin)的master分支
+git push origin master
+
+#查看当前所在分支
+git branch
+
+#创建新的本地分支，并切换到新分支(同原分支)
+git checkout -b your_branch
+
+#新产生远程分支your_branch并将本地your_branch分支关联到远程your_branch分支
+git push origin your_branch:your_branch
+</code></pre>
+<p>PR会按照squash方式进行merge。如果不创建新分支，本地和远程的提交记录将不能保持同步
+ps: (1)方便id显示在contributor列表中可以做以下设置</p>
+<pre><code class="language-powershell">git config --global your.name&quot;username&quot;
+git congig --global your.email&quot;xxx@mail.com&quot;
+</code></pre>
+<p>(2)分支查看</p>
+<p>本地分支查看 git branch    </p>
+<p>远程分支查看 git branch -r</p>
+<p>全部分支 git branch -a</p>
+<p>分支细节查看 git branch -vv / git branch -vvr</p>
+<h3>开发</h3>
+<h4>修改代码，保存修改，推送到自己的远程仓库</h4>
+<pre><code class="language-powershell">#保存修改到暂存区
+git add 
+#将暂存区内容添加到本地仓库
+git commit -m&quot;commit log&quot;
+#推送到自己的远程仓库
+git push origin your_branch
+</code></pre>
+<h3>提交PR</h3>
+<p>发出一个pull request到 upstream develop分支
+<img src="https://gcore.jsdelivr.net/gh/SherZhou/pic_source/img/1658891906292-4ef51083-3d12-4ca8-afe3-6c7f3c17efe1.png" alt="">
+填写标题和内容点击确认
+之后导师会进行代码复核工作，满意后导师会将其合并到源分支</p>
+<h4>删除分支</h4>
+<pre><code class="language-powershell">git checkout master
+git branch -d your_branch
+git remote prune origin #如果已经在GitHub PR页面删除了分支，否则可以执行下面命令删除
+git push origin --delete your_branch
+</code></pre>
+<h3>参考</h3>
+<p><a href="https://blog.csdn.net/qq_33429968/article/details/62219783?spm=1001.2101.3001.6661.1&utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&utm_relevant_index=1">https://blog.csdn.net/qq_33429968/article/details/62219783?spm=1001.2101.3001.6661.1&amp;utm_medium=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&amp;depth_1-utm_source=distribute.pc_relevant_t0.none-task-blog-2%7Edefault%7ECTRLIST%7Edefault-1-62219783-blog-116944619.pc_relevant_multi_platform_whitelistv2&amp;utm_relevant_index=1</a></p>
+<p><a href="https://learngitbranching.js.org/?locale=zh_CN">https://learngitbranching.js.org/?locale=zh_CN</a></p>
+</div>
+        </article>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Sher Zhou ·
+        <a href="https://github.com/SherZhou" rel="noopener">GitHub</a> ·
+        <a href="mailto:xianerr@hku.hk">Email</a>
+      </p>
+    </div>
+  </footer>
+  
+</body>
+</html>

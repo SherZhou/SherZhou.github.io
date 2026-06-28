@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pandas常用总结 · Sher</title>
+  <meta name="author" content="Sher Zhou">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-title" href="/">Sher</a>
+      <nav>
+        <a href="/" class="">首页</a>
+        <a href="/archives.html" class="">归档</a>
+        <a href="/search.html" class="">搜索</a>
+        <a href="/about.html" class="">关于</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    
+        <article class="post">
+          <header class="post-header">
+            <h1>Pandas常用总结</h1>
+            <time datetime="2022-12-28">2022年12月28日</time>
+            <p class="tags"><span class="tag">Python</span></p>
+          </header>
+          <div class="post-content"><h2>pandas常用句</h2>
+<p>做研究助理的过程中使用pandas做数据分析比较多，记录下使用最频繁的语句。</p>
+<h3>输入输出</h3>
+<pre><code class="language-python"># txt:read_table
+# xlsx,xls:read_excel
+# csv:read_csv
+
+pd=pd.read_excel(&#39;/content/drive/MyDrive/notebook/socio/input/lbs.xlsx&#39;)
+tmp.to_excel(&#39;/content/drive/MyDrive/notebook/socio/output/tmp.xlsx&#39;)
+</code></pre>
+<pre><code class="language-python">from google.colab import drive
+drive.mount(&#39;/content/drive&#39;)
+#rename
+test.rename(columns={&#39;终点ID&#39;:&#39;起点网格ID&#39;}, inplace = True)
+#aggregation
+work_agg=work.groupby([&#39;town&#39;]).agg({&#39;人数&#39;: [np.sum]})
+#output
+work_agg.to_csv(&#39;work_agg.txt&#39;,sep=&#39;\t&#39;, index=False)
+#drop
+tmp.drop([&#39;B&#39;, &#39;C&#39;], axis=1)
+#merge
+# merge一定要注意选择没有重复值的列作
+result_inner = pd.merge(cencus_lbs, 
+                  commute,
+                  left_on=&#39;街镇&#39;,
+                  right_on=&#39;town&#39;,
+                  how=&#39;inner&#39;)
+#add column
+
+  df[&#39;home_ratio&#39;] = df.apply(lambda x: function(x[&quot;home&quot;], x[&quot;pop20&quot;]), axis=1)
+  df[&#39;com_17_o&#39;]= df.apply(lambda x: function(x[&quot;com_17_o&quot;], x[&quot;pop20&quot;]), axis=1)
+  df[&#39;com_17_d&#39;]= df.apply(lambda x: function(x[&quot;com_17_d&quot;], x[&quot;pop20&quot;]), axis=1)
+
+  df[&#39;com_21_o&#39;]= df.apply(lambda x: function(x[&quot;com_21_o&quot;], x[&quot;pop20&quot;]), axis=1)
+  df[&#39;com_21_d&#39;]= df.apply(lambda x: function(x[&quot;com_21_d&quot;], x[&quot;pop20&quot;]), axis=1)
+  return df
+
+#add colunm2
+def ses1(input):
+  df = input
+  
+  conditions = [
+    ((df[&#39;专业技术人员 &#39;]+df[&#39;管理者和企业主&#39;]) &gt;= (df[&#39;个体经营业者&#39;]+df[&#39;文职人员&#39;]+df[&#39;服务人员&#39;]))&amp;((df[&#39;专业技术人员 &#39;]+df[&#39;管理者和企业主&#39;]) &gt;= df[&#39;生产操作人员&#39;]),   
+    ((df[&#39;个体经营业者&#39;]+df[&#39;文职人员&#39;]+df[&#39;服务人员&#39;]) &gt;= (df[&#39;专业技术人员 &#39;]+df[&#39;管理者和企业主&#39;]) ) &amp; ((df[&#39;个体经营业者&#39;]+df[&#39;文职人员&#39;]+df[&#39;服务人员&#39;])&gt;= df[&#39;生产操作人员&#39;]),
+    (df[&#39;生产操作人员&#39;]&gt;(df[&#39;专业技术人员 &#39;]+df[&#39;管理者和企业主&#39;]) )&amp;( df[&#39;生产操作人员&#39;]&gt;(df[&#39;个体经营业者&#39;]+df[&#39;文职人员&#39;]+df[&#39;服务人员&#39;]))
+  ]
+  values = [1,2,3]
+  df[&#39;ses_level&#39;] = np.select(conditions, values) 
+  return df
+</code></pre>
+<h3>Geopandas</h3>
+<pre><code class="language-python">#geopandas
+!apt install libspatialindex-dev
+!pip install rtree
+!pip install geopandas
+import geopandas as gpd
+#read data
+subdis=gpd.read_file(&#39;/content/drive/MyDrive/notebook/socio/input/subdistrict.shp&#39;)
+
+#转geopandas格式输出shp
+geometry = [Point(xy) for xy in zip(df.Lon, df.Lat)]
+df = df.drop([&#39;Lon&#39;, &#39;Lat&#39;], axis=1)
+gdf = GeoDataFrame(df, crs=&quot;EPSG:4326&quot;, geometry=geometry)
+
+gdf.to_file(&quot;countries.shp&quot;)
+</code></pre>
+<pre><code class="language-python"># colab 文件夹操作
+fileList=os.listdir(&#39;/content/drive/MyDrive/LBS/Fishnet/Centre&#39;)
+fileList.sort()
+odfileList = gffp()
+</code></pre>
+<pre><code class="language-python">#字符操作
+print(df[df[&#39;name&#39;].str.endswith(&#39;e&#39;)])
+#判空
+print(arr[pd.isna(arr[&#39;numTest&#39;])==True])
+</code></pre>
+<h3>txt合并</h3>
+<pre><code class="language-python">import os
+ 
+path = r&quot;/content/drive/MyDrive/LBS/Fishnet/Centre&quot;
+files = os.listdir(path)
+txts = pd.DataFrame()
+for file in files:
+    position = path + os.sep + file
+    print(position)
+    data = pd.read_csv(position, sep=&#39;\\s+&#39;)
+    txts = pd.concat([txts, data])
+ 
+txts.to_csv(&#39;data.csv&#39;, encoding=&#39;utf-8&#39;, index=False)
+</code></pre>
+<h2>Pandas vs SQL</h2>
+<h3>groupby</h3>
+<pre><code class="language-sql">SELECT &quot;性别&quot;, count(*)FROM dfGROUP BY 性别;
+SELECT 星期几, AVG(小费), COUNT(*)FROM dfGROUP BY 星期几;
+SELECT 是否吸烟, 星期几, COUNT(*), AVG(小费)FROM tipsGROUP BY 是否吸烟, 星期几;
+</code></pre>
+<pre><code class="language-python">df.groupby(&#39;性别&#39;).size()
+df.groupby(&#39;性别&#39;).count()
+df.groupby(&#39;性别&#39;)[&quot;总费用&quot;].count()
+#agg()允许将字典传递给分组的DataFrame，从而指示要应用于特定列的函数。
+df.groupby(&#39;星期几&#39;).agg({&#39;小费&#39;: np.mean, &#39;星期几&#39;: np.size})
+#通过将一列列传递给方法，来完成按多个列分组groupby()
+df.groupby([&#39;是否吸烟&#39;, &#39;星期几&#39;]).agg({&#39;小费&#39;: [np.size, np.mean]})
+</code></pre>
+<h3>连接</h3>
+<h5>mysql</h5>
+<p>JOIN 按照功能大致分为如下三类：</p>
+<ul>
+<li><strong>INNER JOIN（内连接,或等值连接）</strong>：获取两个表中字段匹配关系的记录。</li>
+<li>**LEFT JOIN（左连接）：**获取左表所有记录，即使右表没有对应匹配的记录。</li>
+<li><strong>RIGHT JOIN（右连接）：</strong> 与 LEFT JOIN 相反，用于获取右表所有记录，即使左表没有对应匹配的记录。</li>
+</ul>
+<h5>pandas</h5>
+<p>可以使用join()或merge()执行JOIN。 默认情况下，join()将在其索引上联接DataFrame。 每个方法都有参数，可让指定要执行的联接类型（LEFT，RIGHT，INNER，FULL）或要联接的列（列名或索引）。推荐使用merge()函数。</p>
+<pre><code class="language-sql">#inner join 内连接
+SELECT *FROM df1INNER JOIN df2 ON df1.key = df2.key;
+#left outer join左连接
+SELECT *FROM df1LEFT OUTER JOIN df2 ON df1.key = df2.key;
+#right join右连接
+SELECT *FROM df1RIGHT OUTER JOIN df2 ON df1.key = df2.key;
+#full join全连接
+#MySQL中不支持全连接，一般使用union完成
+</code></pre>
+<pre><code class="language-python">#inner join 内连接 
+pd.merge(df1, df2, on=&#39;key&#39;)
+#left outer join左连接
+pd.merge(df1, df2, on=&#39;key&#39;, how=&#39;left&#39;)
+#right join右连接
+pd.merge(df1, df2, on=&#39;key&#39;, how=&#39;right&#39;)
+#full join全连接
+pd.merge(df1, df2, on=&#39;key&#39;, how=&#39;outer&#39;)
+</code></pre>
+<h3>性能对比</h3>
+<p>在Pandas官方文档中提出会比R中<code>base::merge.data.frame</code>函数快，因为其对于DataFrame的精心的算法设计和内部数据布局</p>
+<p>但是软件开发中似乎普遍使用SQL，据说是到Terabyte这种数量级的话pandas是没有办法操作的，但由于自己目前操作的数据是txt格式，几个G，导入自己电脑MySQL会出现内存不够的情况，所以直接使用pandas.DataFame似乎更方便。</p>
+<p>聚合与连接操作息息相关</p>
+<p>尽量将连接作为最后操作</p>
+<h3>References</h3>
+<p>常用方法对比实现：<a href="https://www.finclip.com/news/f/32239.html">https://www.finclip.com/news/f/32239.html</a></p>
+<p>Pandas官方文档相关内容：<a href="https://pandas.pydata.org/docs/user_guide/merging.html?highlight=merge#database-style-dataframe-or-named-series-joining-merging">https://pandas.pydata.org/docs/user_guide/merging.html?highlight=merge#database-style-dataframe-or-named-series-joining-merging</a></p>
+</div>
+        </article>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Sher Zhou ·
+        <a href="https://github.com/SherZhou" rel="noopener">GitHub</a> ·
+        <a href="mailto:xianerr@hku.hk">Email</a>
+      </p>
+    </div>
+  </footer>
+  
+</body>
+</html>

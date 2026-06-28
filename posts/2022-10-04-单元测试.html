@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>单元测试 · Sher</title>
+  <meta name="author" content="Sher Zhou">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Serif+SC:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="/assets/style.css">
+</head>
+<body>
+  <header class="site-header">
+    <div class="container">
+      <a class="site-title" href="/">Sher</a>
+      <nav>
+        <a href="/" class="">首页</a>
+        <a href="/archives.html" class="">归档</a>
+        <a href="/search.html" class="">搜索</a>
+        <a href="/about.html" class="">关于</a>
+      </nav>
+    </div>
+  </header>
+  <main class="container">
+    
+        <article class="post">
+          <header class="post-header">
+            <h1>单元测试</h1>
+            <time datetime="2022-10-04">2022年10月4日</time>
+            <p class="tags"><span class="tag">java</span></p>
+          </header>
+          <div class="post-content"><h3>JUnit5</h3>
+<p>JUnit是最早接触也是最被熟知的Java单元测试框架
+<a href="https://junit.org/junit5/docs/current/user-guide/#overview">https://junit.org/junit5/docs/current/user-guide/#overview</a></p>
+<h3>mockito4</h3>
+<p><a href="https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html">https://javadoc.io/doc/org.mockito/mockito-core/latest/org/mockito/Mockito.html</a></p>
+<p>使用过程中区分@Mock与@injectMocks
+@InjectMocks: 创建一个实例，简单的说是这个Mock可以调用真实代码的方法
+其余用@Mock（或@Spy）注解创建的mock将被注入到用该实例中。
+请注意：必须使用@RunWith(MockitoJUnitRunner.class)或Mockito.initMocks(this)初始化这些模拟并注入它们。</p>
+<h3>MockMvc</h3>
+<p>在对Controller进行测试时，希望能够通过输入URL对Controller进行测试，如果通过启动服务器，建立http client进行测试，这样会使得测试变得很麻烦，比如，启动速度慢，测试验证不方便，依赖网络环境等
+引入了MockMVC对Controller测试更为方便
+MockMvc基于springframework.test</p>
+<h4>步骤</h4>
+<ul>
+<li><code>MockMvcBuilder</code>构造MockMvc的构造器；</li>
+<li>mockMvc调用<code>perform</code>，执行一个<code>RequestBuilder</code>请求，调用controller的业务处理逻辑；</li>
+<li><code>perform</code>返回<code>ResultActions</code>，返回操作结果，通过ResultActions，提供了统一的验证方式；</li>
+<li>使用<code>StatusResultMatchers</code>对请求结果进行验证；</li>
+<li>使用<code>ContentResultMatchers</code>对请求返回的内容进行验证；</li>
+</ul>
+</div>
+        </article>
+  </main>
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; 2026 Sher Zhou ·
+        <a href="https://github.com/SherZhou" rel="noopener">GitHub</a> ·
+        <a href="mailto:xianerr@hku.hk">Email</a>
+      </p>
+    </div>
+  </footer>
+  
+</body>
+</html>
