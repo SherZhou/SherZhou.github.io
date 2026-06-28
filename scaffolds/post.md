@@ -1,12 +1,7 @@
 ---
-title: {{ title }}
-date: {{ date }}
-top: false
-cover: false
-password:
-toc: true
-mathjax: true
-summary:
-tags: 
-categories:
+title: 新文章标题
+date: 2026-06-28
+tags: []
 ---
+
+在这里写文章。
